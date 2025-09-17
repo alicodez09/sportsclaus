@@ -3,7 +3,6 @@ import { useState, useEffect } from "react"
 import type { Field, DataItem } from "./data-table"
 import axios from "axios"
 import { CloudinaryUpload } from "@/components/CloudinaryUpload"
-import { CustomRichTextEditor } from "@/components/CustomRichTextEditor" // Import the rich text editor
 
 interface CreateModalProps {
     isOpen: boolean
@@ -27,7 +26,26 @@ export default function CreateModal({
         { id: 2, name: "Football", slug: "Football" },
         { id: 3, name: "Kabaddi", slug: "Kabaddi" },
     ])
+    const [player_type, setPlayerType] = useState<any[]>([
+        { id: 1, name: "Batsman", slug: "Batsman" },
+        { id: 2, name: "Bowler", slug: "Football" },
+        { id: 3, name: "All Rounder", slug: "All Rounder" },
+    ])
 
+    const [type, setType] = useState<any[]>([
+        { id: 1, name: "T20", slug: "T20" },
+        { id: 2, name: "ODI", slug: "ODI" },
+        { id: 3, name: "TEST", slug: "TEST" },
+    ])
+    const [ranking, setRanking] = useState<any[]>(
+        Array.from({ length: 100 }, (_, i) => ({
+            id: i + 1,
+            name: String(i + 1),
+            slug: String(i + 1),
+        })),
+    )
+
+    const [country, setCountry] = useState<any[]>([])
     useEffect(() => {
         const initialData: Record<string, any> = {}
         fields.forEach((field) => {
@@ -36,6 +54,20 @@ export default function CreateModal({
         })
         setFormData(initialData)
     }, [data, fields])
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:8082/api/v1/playerranking/get-countries`,
+                )
+                setCountry(response.data.data)
+            } catch (error) {
+                console.error("Error fetching categories:", error)
+            }
+        }
+
+        fetchCountries()
+    }, [])
 
     const handleChange = (fieldName: string, value: any) => {
         setFormData((prev: any) => ({
@@ -68,17 +100,6 @@ export default function CreateModal({
                 newErrors[field.name] = `${field.label} is required`
             }
 
-            // Add validation for rich text content
-            if (
-                field.required &&
-                field.type === "textarea" &&
-                (!formData[field.name] ||
-                    formData[field.name].trim() === "" ||
-                    formData[field.name] === "<p><br></p>") // Check for empty rich text content
-            ) {
-                newErrors[field.name] = `${field.label} is required`
-            }
-
             if (field.type === "email" && formData[field.name]) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
                 if (!emailRegex.test(formData[field.name])) {
@@ -102,7 +123,7 @@ export default function CreateModal({
 
         if (validateForm()) {
             const response = await axios.post(
-                `http://localhost:8082/api/v1/newsfeed/create`,
+                `http://localhost:8082/api/v1/playerranking/create`,
                 formData,
             )
             if (response.data.success) {
@@ -116,10 +137,10 @@ export default function CreateModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-xl">
+            <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
                 <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-900">
-                        Create Newsfeed
+                        Create Player Ranking
                     </h3>
                     <button
                         onClick={onClose}
@@ -128,6 +149,7 @@ export default function CreateModal({
                         ❌
                     </button>
                 </div>
+
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-4">
                         {fields.map((field) => (
@@ -173,6 +195,133 @@ export default function CreateModal({
                                             </option>
                                         ))}
                                     </select>
+                                ) : field.name === "type" ? (
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            Select {field.label}
+                                        </option>
+                                        {type.map((category) => (
+                                            <option
+                                                key={category._id}
+                                                value={category._id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : field.name === "player_type" ? (
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            Select {field.label}
+                                        </option>
+                                        {player_type.map((category) => (
+                                            <option
+                                                key={category._id}
+                                                value={category._id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : field.name === "ranking" ? (
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            Select {field.label}
+                                        </option>
+                                        {ranking.map((category) => (
+                                            <option
+                                                key={category._id}
+                                                value={category._id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : field.name === "country" ? (
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name]?._id || ""} // show selected by _id
+                                        onChange={(e) => {
+                                            const selectedCountry =
+                                                country.find(
+                                                    (c) =>
+                                                        c._id ===
+                                                        e.target.value,
+                                                )
+
+                                            if (selectedCountry) {
+                                                handleChange(field.name, {
+                                                    name: selectedCountry.name,
+                                                    code: selectedCountry.code,
+                                                    flag: selectedCountry.flag,
+                                                })
+                                            }
+                                        }}
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            Select {field.label}
+                                        </option>
+                                        {country.map((c) => (
+                                            <option key={c._id} value={c._id}>
+                                                {c.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 ) : field.type === "date" ? (
                                     <input
                                         type="date"
@@ -199,20 +348,24 @@ export default function CreateModal({
                                         }`}
                                     />
                                 ) : field.type === "textarea" ? (
-                                    // Use CustomRichTextEditor for textarea fields
-                                    <div
-                                        className={`mt-1 ${errors[field.name] ? "rounded-md border border-red-500" : ""}`}
-                                    >
-                                        <CustomRichTextEditor
-                                            value={formData[field.name] || ""}
-                                            onChange={(value) =>
-                                                handleChange(field.name, value)
-                                            }
-                                            placeholder={`Enter ${field.label}...`}
-                                            name={field.name}
-                                            id={field.name}
-                                        />
-                                    </div>
+                                    <textarea
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                        rows={4}
+                                    />
                                 ) : field.type === "image" ? (
                                     <>
                                         <CloudinaryUpload

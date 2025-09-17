@@ -3,7 +3,6 @@ import { useState, useEffect } from "react"
 import type { Field, DataItem } from "./data-table"
 import axios from "axios"
 import { CloudinaryUpload } from "@/components/CloudinaryUpload"
-import { CustomRichTextEditor } from "@/components/CustomRichTextEditor" // Import the rich text editor
 
 interface CreateModalProps {
     isOpen: boolean
@@ -27,7 +26,6 @@ export default function CreateModal({
         { id: 2, name: "Football", slug: "Football" },
         { id: 3, name: "Kabaddi", slug: "Kabaddi" },
     ])
-
     useEffect(() => {
         const initialData: Record<string, any> = {}
         fields.forEach((field) => {
@@ -68,17 +66,6 @@ export default function CreateModal({
                 newErrors[field.name] = `${field.label} is required`
             }
 
-            // Add validation for rich text content
-            if (
-                field.required &&
-                field.type === "textarea" &&
-                (!formData[field.name] ||
-                    formData[field.name].trim() === "" ||
-                    formData[field.name] === "<p><br></p>") // Check for empty rich text content
-            ) {
-                newErrors[field.name] = `${field.label} is required`
-            }
-
             if (field.type === "email" && formData[field.name]) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
                 if (!emailRegex.test(formData[field.name])) {
@@ -101,8 +88,9 @@ export default function CreateModal({
         e.preventDefault()
 
         if (validateForm()) {
+            console.log(formData, "formData")
             const response = await axios.post(
-                `http://localhost:8082/api/v1/newsfeed/create`,
+                `http://localhost:8082/api/v1/latestnews/create`,
                 formData,
             )
             if (response.data.success) {
@@ -116,10 +104,10 @@ export default function CreateModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-xl">
+            <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
                 <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-900">
-                        Create Newsfeed
+                        Create Latest News
                     </h3>
                     <button
                         onClick={onClose}
@@ -128,6 +116,7 @@ export default function CreateModal({
                         ❌
                     </button>
                 </div>
+
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-4">
                         {fields.map((field) => (
@@ -199,20 +188,24 @@ export default function CreateModal({
                                         }`}
                                     />
                                 ) : field.type === "textarea" ? (
-                                    // Use CustomRichTextEditor for textarea fields
-                                    <div
-                                        className={`mt-1 ${errors[field.name] ? "rounded-md border border-red-500" : ""}`}
-                                    >
-                                        <CustomRichTextEditor
-                                            value={formData[field.name] || ""}
-                                            onChange={(value) =>
-                                                handleChange(field.name, value)
-                                            }
-                                            placeholder={`Enter ${field.label}...`}
-                                            name={field.name}
-                                            id={field.name}
-                                        />
-                                    </div>
+                                    <textarea
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                        rows={4}
+                                    />
                                 ) : field.type === "image" ? (
                                     <>
                                         <CloudinaryUpload

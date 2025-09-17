@@ -7,8 +7,7 @@ const Cricket = () => {
     const [latestNews, setLatestNews] = useState([])
     const [playerBanners, setPlayerBanners] = useState([])
     const [ranking, setRanking] = useState([])
-    const [activeTab, setActiveTab] = useState("T20") // Default to T20
-    const [activePlayerType, setActivePlayerType] = useState("Batsman") // Default to Batsman
+    console.log(ranking, "rankingranking")
 
     const [loading, setLoading] = useState(true)
     const [currentSlide, setCurrentSlide] = useState(0)
@@ -99,15 +98,6 @@ const Cricket = () => {
             prev === latestNews.length - 1 ? 0 : prev + 1,
         )
     }
-
-    // Filter rankings based on selected type and player type
-    const filteredRankings = ranking
-        .filter(
-            (player: any) =>
-                player.type === activeTab &&
-                player.player_type === activePlayerType,
-        )
-        .slice(0, 5) // Get top 5
 
     const liveScores = [
         {
@@ -300,131 +290,6 @@ const Cricket = () => {
 
                     {/* Sidebar */}
                     <div className="space-y-8">
-                        {/* Player Rankings */}
-                        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-                            <div className="border-b border-gray-200 px-6 py-4">
-                                <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 text-yellow-500"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    Player Rankings
-                                </div>
-                            </div>
-                            <div className="p-4">
-                                {/* Format Tabs */}
-                                <div className="mb-4 flex space-x-2">
-                                    <button
-                                        onClick={() => setActiveTab("T20")}
-                                        className={`rounded-md px-3 py-1 text-sm font-medium ${
-                                            activeTab === "T20"
-                                                ? "bg-blue-900 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                    >
-                                        T20
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab("ODI")}
-                                        className={`rounded-md px-3 py-1 text-sm font-medium ${
-                                            activeTab === "ODI"
-                                                ? "bg-blue-900 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                    >
-                                        ODI
-                                    </button>
-                                </div>
-
-                                {/* Player Type Tabs */}
-                                <div className="mb-4 flex space-x-2">
-                                    <button
-                                        onClick={() =>
-                                            setActivePlayerType("Batsman")
-                                        }
-                                        className={`rounded-md px-3 py-1 text-sm font-medium ${
-                                            activePlayerType === "Batsman"
-                                                ? "bg-blue-900 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                    >
-                                        Batsman
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            setActivePlayerType("Bowler")
-                                        }
-                                        className={`rounded-md px-3 py-1 text-sm font-medium ${
-                                            activePlayerType === "Bowler"
-                                                ? "bg-blue-900 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                    >
-                                        Bowler
-                                    </button>
-                                </div>
-
-                                {/* Rankings List */}
-                                <div className="space-y-3">
-                                    {filteredRankings.length === 0 ? (
-                                        <p className="py-4 text-center text-gray-500">
-                                            No rankings available for this
-                                            category.
-                                        </p>
-                                    ) : (
-                                        filteredRankings.map(
-                                            (player: any, index: number) => (
-                                                <div
-                                                    key={player._id}
-                                                    className="flex items-center rounded-lg border border-gray-200 bg-gray-50 p-3"
-                                                >
-                                                    <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-900">
-                                                        {player.rank}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="font-medium text-gray-900">
-                                                                {player.name}
-                                                            </span>
-                                                            <span className="text-sm font-bold text-blue-900">
-                                                                {player.rating}
-                                                            </span>
-                                                        </div>
-                                                        <div className="mt-1 flex items-center">
-                                                            <img
-                                                                src={
-                                                                    player
-                                                                        .country
-                                                                        .flag
-                                                                }
-                                                                alt={
-                                                                    player
-                                                                        .country
-                                                                        .name
-                                                                }
-                                                                className="mr-2 h-4 w-6 object-cover"
-                                                            />
-                                                            <span className="text-xs text-gray-500">
-                                                                {
-                                                                    player
-                                                                        .country
-                                                                        .name
-                                                                }
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ),
-                                        )
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Live Scores */}
                         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
                             <div className="border-b border-gray-200 px-6 py-4">

@@ -51,7 +51,7 @@ export function Sidebar({ children }: SidebarProps) {
                                     Admin Panel
                                 </span>
                                 <span className="text-xs text-gray-500">
-                                    Management System
+                                    Sportsclaus Dashboard
                                 </span>
                             </div>
                         )}
@@ -93,7 +93,7 @@ export function Sidebar({ children }: SidebarProps) {
                 {/* Sidebar Navigation */}
                 <nav className="flex-1 overflow-y-auto py-4">
                     <ul className="space-y-1 px-3">
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/admin/order_anayltics"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -105,7 +105,7 @@ export function Sidebar({ children }: SidebarProps) {
                                     </span>
                                 )}
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/admin/users"
@@ -115,7 +115,7 @@ export function Sidebar({ children }: SidebarProps) {
                                 {isOpen && <span className="ml-3">Users</span>}
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/admin/create-category"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -138,16 +138,66 @@ export function Sidebar({ children }: SidebarProps) {
                                     <span className="ml-3">Create Product</span>
                                 )}
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/admin/create-newsfeed"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                             >
-                                <Cog6ToothIcon className="h-5 w-5" />
+                                <TagIcon className="h-5 w-5" />
                                 {isOpen && (
                                     <span className="ml-3">
                                         Create Newsfeed
+                                    </span>
+                                )}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/create-banner"
+                                className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            >
+                                <CubeIcon className="h-5 w-5" />
+                                {isOpen && (
+                                    <span className="ml-3">Create Banner</span>
+                                )}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/create-lastest-news"
+                                className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            >
+                                <ChartBarIcon className="h-5 w-5" />
+                                {isOpen && (
+                                    <span className="ml-3">
+                                        Create Latest News
+                                    </span>
+                                )}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/create-player-banner"
+                                className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            >
+                                <ChartBarIcon className="h-5 w-5" />
+                                {isOpen && (
+                                    <span className="ml-3">
+                                        Create Player Banner
+                                    </span>
+                                )}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/create-player-ranking"
+                                className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            >
+                                <ChartBarIcon className="h-5 w-5" />
+                                {isOpen && (
+                                    <span className="ml-3">
+                                        Create Player Ranking
                                     </span>
                                 )}
                             </Link>
@@ -163,7 +213,7 @@ export function Sidebar({ children }: SidebarProps) {
                                 )}
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/admin/user_product"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -184,7 +234,7 @@ export function Sidebar({ children }: SidebarProps) {
                                     <span className="ml-3">Tickets</span>
                                 )}
                             </Link>
-                        </li>
+                        </li> */}
                     </ul>
                 </nav>
 
@@ -224,7 +274,7 @@ export function Sidebar({ children }: SidebarProps) {
                                 Admin Panel
                             </span>
                             <span className="text-xs text-gray-500">
-                                Management System
+                                Sportsclaus Dashboard
                             </span>
                         </div>
                     </div>

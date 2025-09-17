@@ -13,15 +13,51 @@ import shoppingMall from "./shopping_mall.jpg"
 import clothes from "./clothes.jpg"
 import online from "./online.jpg"
 import Cricket from "../cricket/Cricket"
+import axios from "axios"
+
+// Define the type for banner data
+interface Banner {
+    _id: string
+    category: string
+    name: string
+    description: string
+    image: string[]
+    createdAt: string
+    updatedAt: string
+    __v: number
+}
 
 const Home = () => {
     // State for the image slider
     const [currentSlide, setCurrentSlide] = useState(0)
     const [isPaused, setIsPaused] = useState(false)
+    const [sliderData, setSliderData] = useState<Banner[]>([])
     const controls = useAnimation()
-    const containerRef = useRef(null)
 
-    const sliderImages = [shoppingMall, online, clothes]
+    // Default images in case API fails or returns no data
+    const defaultImages = [shoppingMall, online, clothes]
+
+    // Get images from API response or use defaults
+    const sliderImages =
+        sliderData.length > 0
+            ? sliderData.map((banner) => banner.image[0])
+            : defaultImages
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:8082/api/v1/banner/get`,
+                )
+                if (response.data.data && response.data.data.length > 0) {
+                    setSliderData(response.data.data)
+                }
+            } catch (error) {
+                console.error("Error fetching banners:", error)
+            }
+        }
+        getData()
+    }, [])
 
     // Metric cards data
     const metricCards = [
@@ -74,6 +110,8 @@ const Home = () => {
 
     // Auto-advance the slider
     useEffect(() => {
+        if (sliderImages.length === 0) return
+
         const interval = setInterval(() => {
             setCurrentSlide((prev) =>
                 prev === sliderImages.length - 1 ? 0 : prev + 1,
@@ -151,28 +189,60 @@ const Home = () => {
                                 className="h-full w-full object-cover opacity-85"
                             />
                             <div className="absolute inset-0 bg-black/30" />
+
+                            {/* Show banner data if available */}
+                            {sliderData.length > 0 && sliderData[index] && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white">
+                                    <motion.h1
+                                        className="mb-4 text-4xl font-bold opacity-100 md:text-6xl"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                    >
+                                        {sliderData[index].name}
+                                    </motion.h1>
+                                    <motion.p
+                                        className="mb-8 max-w-2xl text-xl opacity-100 md:text-2xl"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                            duration: 0.8,
+                                            delay: 0.2,
+                                        }}
+                                    >
+                                        {sliderData[index].description}
+                                    </motion.p>
+                                </div>
+                            )}
+
+                            {/* Fallback content if no banners from API */}
+                            {sliderData.length === 0 && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white">
+                                    <motion.h1
+                                        className="mb-4 text-4xl font-bold opacity-100 md:text-6xl"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                    >
+                                        Your Premier Sports Hub
+                                    </motion.h1>
+                                    <motion.p
+                                        className="mb-8 max-w-2xl text-xl opacity-100 md:text-2xl"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                            duration: 0.8,
+                                            delay: 0.2,
+                                        }}
+                                    >
+                                        Sportsclaus gives Live scores, in-depth
+                                        stats, and the latest news from around
+                                        the world.
+                                    </motion.p>
+                                </div>
+                            )}
                         </div>
                     ))}
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white">
-                        <motion.h1
-                            className="mb-4 text-4xl font-bold opacity-100 md:text-6xl"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                        >
-                            Your Premier Sports Hub
-                        </motion.h1>
-                        <motion.p
-                            className="mb-8 max-w-2xl text-xl opacity-100 md:text-2xl"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                        >
-                            Sportsclaus gives Live scores, in-depth stats, and
-                            the latest news from around the world.
-                        </motion.p>
-                    </div>
 
                     {/* Slider Navigation */}
                     <button
@@ -208,78 +278,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Animated Metrics Cards Section */}
-            <section
-                className="relative overflow-hidden rounded-2xl"
-                ref={containerRef}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-            >
-                <div className="relative">
-                    <motion.div
-                        className="flex gap-6 whitespace-nowrap"
-                        animate={controls}
-                    >
-                        {/* First set of cards */}
-                        {metricCards.map((card) => (
-                            <motion.div
-                                key={`first-${card.id}`}
-                                className={`h-48 w-80 flex-shrink-0 ${card.bgColor} ${card.textColor} relative flex flex-col justify-between overflow-hidden rounded-2xl p-6`}
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="mb-2 text-4xl font-bold">
-                                            {card.value}
-                                        </div>
-                                        <div className="text-sm opacity-80">
-                                            {card.description}
-                                        </div>
-                                        <div className="text-sm opacity-80">
-                                            {card.subdescription}
-                                        </div>
-                                    </div>
-                                    {card.icon && (
-                                        <div className="opacity-60">
-                                            <card.icon size={24} />
-                                        </div>
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))}
-
-                        {/* Duplicate set for seamless loop */}
-                        {metricCards.map((card) => (
-                            <motion.div
-                                key={`second-${card.id}`}
-                                className={`h-48 w-80 flex-shrink-0 ${card.bgColor} ${card.textColor} relative flex flex-col justify-between overflow-hidden rounded-2xl p-6`}
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="mb-2 text-4xl font-bold">
-                                            {card.value}
-                                        </div>
-                                        <div className="text-sm opacity-80">
-                                            {card.description}
-                                        </div>
-                                        <div className="text-sm opacity-80">
-                                            {card.subdescription}
-                                        </div>
-                                    </div>
-                                    {card.icon && (
-                                        <div className="opacity-60">
-                                            <card.icon size={24} />
-                                        </div>
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </div>
-            </section>
             <Cricket />
         </div>
     )

@@ -9,6 +9,12 @@ import CreateProduct from "./pages/dashboard/createproduct/index"
 import CreateFaq from "./pages/dashboard/createfaq/index"
 
 import CreateNewsfeed from "./pages/dashboard/createnewsfeed/index"
+import CreateBanner from "./pages/dashboard/createbanner/index"
+import Createplayerbanner from "./pages/dashboard/createplayerbanner/index"
+import Createplayerranking from "./pages/dashboard/createplayerranking/index"
+
+import CreateLatestNews from "./pages/dashboard/createlatestnews/index"
+
 import Userproduct from "./pages/dashboard/userproduct/userproduct"
 
 import CreateJob from "./pages/dashboard/createjob/index"
@@ -48,6 +54,22 @@ const App = () => {
                     <Route
                         path="admin/create-newsfeed"
                         element={<CreateNewsfeed />}
+                    />
+                    <Route
+                        path="admin/create-banner"
+                        element={<CreateBanner />}
+                    />
+                    <Route
+                        path="admin/create-player-banner"
+                        element={<Createplayerbanner />}
+                    />
+                    <Route
+                        path="admin/create-player-ranking"
+                        element={<Createplayerranking />}
+                    />
+                    <Route
+                        path="admin/create-lastest-news"
+                        element={<CreateLatestNews />}
                     />
                     <Route
                         path="admin/user_product"

@@ -5,15 +5,19 @@ import { Sidebar } from "@/components/sidebar"
 
 const newsFields: Field[] = [
     { name: "category", label: "Category", type: "select", required: true },
-
-    { name: "name", label: "Name", type: "text", required: true },
+    { name: "rank", label: "Ranking", type: "select", required: true },
+    { name: "type", label: "Game Type", type: "select", required: true },
     {
-        name: "description",
-        label: "Description",
-        type: "textarea",
+        name: "player_type",
+        label: "Player Type",
+        type: "select",
         required: true,
     },
-    { name: "image", label: "Image", type: "image" },
+
+    { name: "rating", label: "Rating", type: "text", required: true },
+
+    { name: "name", label: "Player Name", type: "text", required: true },
+    { name: "country", label: "Country", type: "select", required: true },
 ]
 
 export default function createnewsfeed() {
@@ -22,11 +26,11 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/newsfeed/get`,
+                `http://localhost:8082/api/v1/playerranking/get`,
             )
             setNewsData(response.data.data)
         } catch (error) {
-            console.error("Error fetching newsfeed:", error)
+            console.error("Error fetching banner:", error)
         }
     }
 
@@ -55,11 +59,11 @@ export default function createnewsfeed() {
                 style={{ backgroundColor: "#fff", height: "100vh" }}
             >
                 <h1 className="mb-6 text-2xl font-bold text-black">
-                    Newsfeed Management
+                    Player Ranking Management
                 </h1>
 
                 <DataTable
-                    modelName="News Items"
+                    modelName="Player Ranking Items"
                     fields={newsFields}
                     data={newsData}
                     onUpdate={handleUpdate}

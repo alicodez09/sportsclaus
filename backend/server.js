@@ -12,6 +12,17 @@ import faqRoutes from "./routes/faqRoutes.js";
 import newsfeedRoutes from "./routes/newsfeedRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
+import bannerRoutes from "./routes/bannerRoutes.js";
+import latestnewsRoutes from "./routes/latestnewsRoutes.js";
+import playerbannerRoutes from "./routes/playerbannerRoutes.js";
+import playerrankingRoutes from "./routes/playerrankingRoutes.js";
+
+
+
+
+
+
+
 
 
 
@@ -43,12 +54,21 @@ app.use("/api/v1/faq", faqRoutes);
 app.use("/api/v1/newsfeed", newsfeedRoutes);
 app.use("/api/v1/job", jobRoutes);
 app.use("/api/v1/tickets", ticketRoutes);
+app.use("/api/v1/banner", bannerRoutes);
+app.use("/api/v1/latestnews", latestnewsRoutes);
+app.use("/api/v1/playerbanner", playerbannerRoutes);
+app.use("/api/v1/playerranking", playerrankingRoutes);
+
+
+
+
+
 
 
 
 //rest api
 app.get("/", (req, res) => {
-  res.send("<h1>Welcome to crm tool app</h1>");
+  res.send("<h1>Welcome to Sportsclaus app</h1>");
 });
 
 //PORT

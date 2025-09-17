@@ -1,11 +1,12 @@
+"use client"
+
 import type React from "react"
 import { useState, useEffect } from "react"
 import type { Field, DataItem } from "./data-table"
 import axios from "axios"
 import { CloudinaryUpload } from "@/components/CloudinaryUpload"
-import { CustomRichTextEditor } from "@/components/CustomRichTextEditor" // Import the rich text editor
 
-interface CreateModalProps {
+interface EditModalProps {
     isOpen: boolean
     onClose: () => void
     fields: Field[]
@@ -13,20 +14,15 @@ interface CreateModalProps {
     onRefresh?: () => void
 }
 
-export default function CreateModal({
+export default function EditModal({
     isOpen,
     onClose,
     fields,
     data,
     onRefresh,
-}: CreateModalProps) {
+}: EditModalProps) {
     const [formData, setFormData] = useState<any>({})
     const [errors, setErrors] = useState<Record<string, string>>({})
-    const [categories, setCategories] = useState<any[]>([
-        { id: 1, name: "Cricket", slug: "Cricket" },
-        { id: 2, name: "Football", slug: "Football" },
-        { id: 3, name: "Kabaddi", slug: "Kabaddi" },
-    ])
 
     useEffect(() => {
         const initialData: Record<string, any> = {}
@@ -52,6 +48,13 @@ export default function CreateModal({
         }
     }
 
+    const handleImageRemove = (fieldName: string, url: string) => {
+        const updatedImages = formData[fieldName].filter(
+            (imgUrl: string) => imgUrl !== url,
+        )
+        handleChange(fieldName, updatedImages)
+    }
+
     const validateForm = () => {
         const newErrors: Record<string, string> = {}
 
@@ -64,17 +67,6 @@ export default function CreateModal({
                 field.required &&
                 field.type === "image" &&
                 formData[field.name]?.length === 0
-            ) {
-                newErrors[field.name] = `${field.label} is required`
-            }
-
-            // Add validation for rich text content
-            if (
-                field.required &&
-                field.type === "textarea" &&
-                (!formData[field.name] ||
-                    formData[field.name].trim() === "" ||
-                    formData[field.name] === "<p><br></p>") // Check for empty rich text content
             ) {
                 newErrors[field.name] = `${field.label} is required`
             }
@@ -101,9 +93,12 @@ export default function CreateModal({
         e.preventDefault()
 
         if (validateForm()) {
-            const response = await axios.post(
-                `http://localhost:8082/api/v1/newsfeed/create`,
-                formData,
+            const updatedData = {
+                ...formData,
+            }
+            const response = await axios.put(
+                `http://localhost:8082/api/v1/newsfeed/update/${data._id}`,
+                updatedData,
             )
             if (response.data.success) {
                 onClose()
@@ -116,10 +111,10 @@ export default function CreateModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-xl">
+            <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
                 <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-900">
-                        Create Newsfeed
+                        Edit Record
                     </h3>
                     <button
                         onClick={onClose}
@@ -128,6 +123,7 @@ export default function CreateModal({
                         ❌
                     </button>
                 </div>
+
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-4">
                         {fields.map((field) => (
@@ -143,7 +139,7 @@ export default function CreateModal({
                                     )}
                                 </label>
 
-                                {field.name === "category" ? (
+                                {field.type === "select" && field.options ? (
                                     <select
                                         id={field.name}
                                         name={field.name}
@@ -155,7 +151,7 @@ export default function CreateModal({
                                                 e.target.value,
                                             )
                                         }
-                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                        className={`mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
                                             errors[field.name]
                                                 ? "border-red-500"
                                                 : "border-gray-300"
@@ -164,12 +160,9 @@ export default function CreateModal({
                                         <option value="">
                                             Select {field.label}
                                         </option>
-                                        {categories.map((category) => (
-                                            <option
-                                                key={category._id}
-                                                value={category._id}
-                                            >
-                                                {category.name}
+                                        {field.options.map((option) => (
+                                            <option key={option} value={option}>
+                                                {option}
                                             </option>
                                         ))}
                                     </select>
@@ -199,27 +192,40 @@ export default function CreateModal({
                                         }`}
                                     />
                                 ) : field.type === "textarea" ? (
-                                    // Use CustomRichTextEditor for textarea fields
-                                    <div
-                                        className={`mt-1 ${errors[field.name] ? "rounded-md border border-red-500" : ""}`}
-                                    >
-                                        <CustomRichTextEditor
-                                            value={formData[field.name] || ""}
-                                            onChange={(value) =>
-                                                handleChange(field.name, value)
-                                            }
-                                            placeholder={`Enter ${field.label}...`}
-                                            name={field.name}
-                                            id={field.name}
-                                        />
-                                    </div>
+                                    <textarea
+                                        id={field.name}
+                                        name={field.name}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        rows={4}
+                                        style={{ color: "black" }}
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    />
                                 ) : field.type === "image" ? (
                                     <>
                                         <CloudinaryUpload
                                             onUploadSuccess={(urls) =>
                                                 handleChange(field.name, urls)
                                             }
-                                            multiple={false}
+                                            multiple={true}
+                                            existingImages={
+                                                formData[field.name] || []
+                                            }
+                                            onImageRemove={(url) =>
+                                                handleImageRemove(
+                                                    field.name,
+                                                    url,
+                                                )
+                                            }
                                         />
                                     </>
                                 ) : (
@@ -233,8 +239,8 @@ export default function CreateModal({
                                         }
                                         id={field.name}
                                         name={field.name}
-                                        style={{ color: "black" }}
                                         value={formData[field.name] || ""}
+                                        style={{ color: "black" }}
                                         onChange={(e) =>
                                             handleChange(
                                                 field.name,

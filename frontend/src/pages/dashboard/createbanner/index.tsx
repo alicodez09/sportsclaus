@@ -6,14 +6,14 @@ import { Sidebar } from "@/components/sidebar"
 const newsFields: Field[] = [
     { name: "category", label: "Category", type: "select", required: true },
 
-    { name: "name", label: "Name", type: "text", required: true },
+    { name: "name", label: "Heading", type: "text", required: true },
     {
         name: "description",
-        label: "Description",
+        label: "Sub Heading",
         type: "textarea",
         required: true,
     },
-    { name: "image", label: "Image", type: "image" },
+    { name: "image", label: "Banner Image", type: "image" },
 ]
 
 export default function createnewsfeed() {
@@ -22,11 +22,11 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/newsfeed/get`,
+                `http://localhost:8082/api/v1/banner/get`,
             )
             setNewsData(response.data.data)
         } catch (error) {
-            console.error("Error fetching newsfeed:", error)
+            console.error("Error fetching banner:", error)
         }
     }
 
@@ -55,11 +55,11 @@ export default function createnewsfeed() {
                 style={{ backgroundColor: "#fff", height: "100vh" }}
             >
                 <h1 className="mb-6 text-2xl font-bold text-black">
-                    Newsfeed Management
+                    Banner Management
                 </h1>
 
                 <DataTable
-                    modelName="News Items"
+                    modelName="Banner Items"
                     fields={newsFields}
                     data={newsData}
                     onUpdate={handleUpdate}
