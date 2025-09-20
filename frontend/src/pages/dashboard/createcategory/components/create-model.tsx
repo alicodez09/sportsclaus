@@ -85,7 +85,7 @@ export default function CreateModal({
 
         if (validateForm()) {
             const response = await axios.post(
-                `http://localhost:8082/api/v1/category/create-category`,
+                `https://events.alltheapps.io/api/v1/category/create-category`,
                 formData,
             )
             if (response.data.success) {

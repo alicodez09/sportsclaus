@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/sidebar"
 
 const newsFields: Field[] = [
     { name: "category", label: "Category", type: "select", required: true },
+    { name: "type", label: "Type", type: "select", required: true },
 
     { name: "name", label: "Name", type: "text", required: true },
     {
@@ -22,8 +23,9 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/newsfeed/get`,
+                `https://events.alltheapps.io/v1/integration_web/GetNews`,
             )
+            console.log(response.data, "response.data")
             setNewsData(response.data.data)
         } catch (error) {
             console.error("Error fetching newsfeed:", error)

@@ -72,10 +72,10 @@ const Order: React.FC = () => {
                 // Fetch orders and products in parallel
                 const [ordersResponse, productsResponse] = await Promise.all([
                     axios.get<{ data: Order[] }>(
-                        `http://localhost:8082/api/v1/auth/user-orders/${parsedData.user._id}`,
+                        `https://events.alltheapps.io/api/v1/auth/user-orders/${parsedData.user._id}`,
                     ),
                     axios.get<{ products: Product[] }>(
-                        `http://localhost:8082/api/v1/product/get-product`,
+                        `https://events.alltheapps.io/api/v1/product/get-product`,
                     ),
                 ])
 

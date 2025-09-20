@@ -32,7 +32,7 @@ const NewsFeed = () => {
             try {
                 setLoading(true)
                 const response = await axios.get(
-                    `http://localhost:8082/api/v1/newsfeed/get`,
+                    `https://events.alltheapps.io/api/v1/newsfeed/get`,
                 )
                 const data = response.data.data
                 if (Array.isArray(data)) {

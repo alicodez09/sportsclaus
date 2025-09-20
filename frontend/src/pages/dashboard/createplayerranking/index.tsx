@@ -26,7 +26,7 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/playerranking/get`,
+                `https://events.alltheapps.io/api/v1/playerranking/get`,
             )
             setNewsData(response.data.data)
         } catch (error) {

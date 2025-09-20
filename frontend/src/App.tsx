@@ -24,6 +24,7 @@ import CreateUsers from "./pages/dashboard/createusers/index"
 import Header from "./components/header"
 import Home from "./pages/home/Home"
 import Cricket from "./pages/cricket/Cricket"
+import Football from "./pages/football/Football"
 
 import Product from "./pages/product/Product"
 import About from "./pages/about/About"
@@ -33,6 +34,10 @@ import Order from "./pages/orders/Order"
 import AdminOrder from "./pages/dashboard/adminorder/Order"
 import UserTickets from "./pages/usertickets/UserTickets"
 import Ticket from "./pages/dashboard/adminticket/Ticket"
+import CricketDetails from "./pages/cricket/components/CricketDetails"
+import FootballDetails from "./pages/football/components/FootballDetails"
+import KabaddiDetails from "./pages/kabaddi/components/KabaddiDetails"
+import Kabaddi from "./pages/kabaddi/Kabaddi"
 
 const App = () => {
     return (
@@ -90,6 +95,12 @@ const App = () => {
 
                     <Route path="/products" element={<Product />} />
                     <Route path="/cricket" element={<Cricket />} />
+                    <Route path="/football" element={<Football />} />
+                    <Route path="/kabaddi" element={<Kabaddi />} />
+
+                    <Route path="/cricket/:id" element={<CricketDetails />} />
+                    <Route path="/football/:id" element={<FootballDetails />} />
+                    <Route path="/kabaddi/:id" element={<KabaddiDetails />} />
 
                     <Route path="/faqs" element={<Faq />} />
                     <Route path="/user_tickets" element={<UserTickets />} />

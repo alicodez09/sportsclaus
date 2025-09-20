@@ -27,6 +27,11 @@ export default function CreateModal({
         { id: 2, name: "Football", slug: "Football" },
         { id: 3, name: "Kabaddi", slug: "Kabaddi" },
     ])
+    const [type, setType] = useState<any[]>([
+        { id: 1, name: "latestnews", slug: "latestnews" },
+        { id: 2, name: "match_analysis", slug: "match_analysis" },
+        { id: 3, name: "opinion", slug: "opinion" },
+    ])
 
     useEffect(() => {
         const initialData: Record<string, any> = {}
@@ -102,7 +107,7 @@ export default function CreateModal({
 
         if (validateForm()) {
             const response = await axios.post(
-                `http://localhost:8082/api/v1/newsfeed/create`,
+                `https://events.alltheapps.io/v1/integration_web/CreateNews`,
                 formData,
             )
             if (response.data.success) {
@@ -198,6 +203,36 @@ export default function CreateModal({
                                                 : "border-gray-300"
                                         }`}
                                     />
+                                ) : field.name === "type" ? (
+                                    <select
+                                        id={field.name}
+                                        name={field.name}
+                                        style={{ color: "black" }}
+                                        value={formData[field.name] || ""}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                field.name,
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                            errors[field.name]
+                                                ? "border-red-500"
+                                                : "border-gray-300"
+                                        }`}
+                                    >
+                                        <option value="">
+                                            Select {field.label}
+                                        </option>
+                                        {type.map((category) => (
+                                            <option
+                                                key={category._id}
+                                                value={category._id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 ) : field.type === "textarea" ? (
                                     // Use CustomRichTextEditor for textarea fields
                                     <div

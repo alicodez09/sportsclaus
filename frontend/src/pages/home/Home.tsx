@@ -1,19 +1,12 @@
-"use client"
-
-import { useState, useEffect, useRef } from "react"
-import {
-    ChevronLeft,
-    ChevronRight,
-    Eye,
-    Heart,
-    InstagramIcon,
-} from "lucide-react"
+import { useState, useEffect } from "react"
+import { ChevronLeft, ChevronRight, Eye, Heart } from "lucide-react"
 import { motion, useAnimation } from "framer-motion"
 import shoppingMall from "./shopping_mall.jpg"
 import clothes from "./clothes.jpg"
 import online from "./online.jpg"
 import axios from "axios"
 import Cricket from "../cricket/Cricket"
+import Football from "../football/Football"
 
 // Define the type for banner data
 interface Banner {
@@ -28,16 +21,12 @@ interface Banner {
 }
 
 const Home = () => {
-    // State for the image slider
     const [currentSlide, setCurrentSlide] = useState(0)
     const [isPaused, setIsPaused] = useState(false)
     const [sliderData, setSliderData] = useState<Banner[]>([])
     const controls = useAnimation()
-
-    // Default images in case API fails or returns no data
     const defaultImages = [shoppingMall, online, clothes]
 
-    // Get images from API response or use defaults
     const sliderImages =
         sliderData.length > 0
             ? sliderData.map((banner) => banner.image[0])
@@ -66,7 +55,6 @@ const Home = () => {
             value: "74M+",
             description: "Followers on",
             subdescription: "@433 Instagram",
-            icon: InstagramIcon,
             bgColor: "bg-blue-900",
             textColor: "text-white",
         },
@@ -171,14 +159,14 @@ const Home = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6">
+            <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-4 sm:p-6">
                 {/* Hero Section with Slider */}
-                <section className="relative mb-12 h-[550px] overflow-hidden">
+                <section className="relative mb-8 h-[400px] overflow-hidden sm:mb-10 sm:h-[450px] md:mb-12 md:h-[500px] lg:h-[550px]">
                     <div className="relative h-full w-full">
                         {sliderImages.map((image: any, index: any) => (
                             <div
                                 key={index}
-                                className={`absolute inset-0 overflow-hidden rounded-2xl shadow-lg transition-opacity duration-1000 ${
+                                className={`absolute inset-0 overflow-hidden rounded-xl shadow-lg transition-opacity duration-1000 md:rounded-2xl ${
                                     index === currentSlide
                                         ? "opacity-100"
                                         : "opacity-0"
@@ -193,9 +181,9 @@ const Home = () => {
 
                                 {/* Show banner data if available */}
                                 {sliderData.length > 0 && sliderData[index] && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white sm:px-8 md:px-12">
                                         <motion.h1
-                                            className="mb-4 text-4xl font-bold opacity-100 md:text-6xl"
+                                            className="mb-2 max-w-xs px-4 text-2xl font-bold opacity-100 sm:mb-3 sm:max-w-md sm:px-0 sm:text-3xl md:mb-4 md:max-w-2xl md:text-4xl lg:text-5xl xl:text-6xl"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.8 }}
@@ -203,7 +191,7 @@ const Home = () => {
                                             {sliderData[index].name}
                                         </motion.h1>
                                         <motion.p
-                                            className="mb-8 max-w-2xl text-xl opacity-100 md:text-2xl"
+                                            className="mb-4 max-w-xs px-4 text-sm opacity-100 sm:mb-6 sm:max-w-md sm:px-0 sm:text-base md:mb-8 md:max-w-xl md:text-lg lg:text-xl"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{
@@ -218,9 +206,9 @@ const Home = () => {
 
                                 {/* Fallback content if no banners from API */}
                                 {sliderData.length === 0 && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white sm:px-8 md:px-12">
                                         <motion.h1
-                                            className="mb-4 text-4xl font-bold opacity-100 md:text-6xl"
+                                            className="mb-2 max-w-xs px-4 text-2xl font-bold opacity-100 sm:mb-3 sm:max-w-md sm:px-0 sm:text-3xl md:mb-4 md:max-w-2xl md:text-4xl lg:text-5xl xl:text-6xl"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.8 }}
@@ -228,7 +216,7 @@ const Home = () => {
                                             Your Premier Sports Hub
                                         </motion.h1>
                                         <motion.p
-                                            className="mb-8 max-w-2xl text-xl opacity-100 md:text-2xl"
+                                            className="mb-4 max-w-xs px-4 text-sm opacity-100 sm:mb-6 sm:max-w-md sm:px-0 sm:text-base md:mb-8 md:max-w-xl md:text-lg lg:text-xl"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{
@@ -248,26 +236,26 @@ const Home = () => {
                         {/* Slider Navigation */}
                         <button
                             onClick={prevSlide}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white transition-all duration-300 hover:bg-white/40"
+                            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-1 text-white transition-all duration-300 hover:bg-white/40 sm:left-4 sm:p-2"
                             aria-label="Previous slide"
                         >
-                            <ChevronLeft size={24} />
+                            <ChevronLeft size={20} className="sm:h-6 sm:w-6" />
                         </button>
                         <button
                             onClick={nextSlide}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white transition-all duration-300 hover:bg-white/40"
+                            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-1 text-white transition-all duration-300 hover:bg-white/40 sm:right-4 sm:p-2"
                             aria-label="Next slide"
                         >
-                            <ChevronRight size={24} />
+                            <ChevronRight size={20} className="sm:h-6 sm:w-6" />
                         </button>
 
                         {/* Slider Indicators */}
-                        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 space-x-2">
+                        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 space-x-2 sm:bottom-6">
                             {sliderImages.map((_, index) => (
                                 <button
                                     key={index}
                                     onClick={() => setCurrentSlide(index)}
-                                    className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                                    className={`h-2 w-2 rounded-full transition-all duration-300 sm:h-3 sm:w-3 ${
                                         index === currentSlide
                                             ? "scale-125 bg-white"
                                             : "bg-white/50"
@@ -280,6 +268,7 @@ const Home = () => {
                 </section>
 
                 <Cricket />
+                <Football />
             </div>
         </>
     )

@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Menu, X, User, LogOut, ShoppingBag } from "lucide-react"
+import { Menu, X, User, LogOut } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import Sportsclasus from "../assets/Sportsclaus.jpeg"
 
@@ -33,7 +33,8 @@ const Header = () => {
         if (authData) {
             try {
                 const parsedData: AuthData = JSON.parse(authData)
-                if (parsedData.success && parsedData.user) {
+                console.log(parsedData, "parsedData")
+                if (parsedData.user) {
                     setUser(parsedData.user)
                 }
             } catch (error) {
@@ -76,10 +77,10 @@ const Header = () => {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden items-center space-x-8 md:flex">
-                        {/* <NavLink to="/" active={location.pathname === "/"}>
+                        <NavLink to="/" active={location.pathname === "/"}>
                             Home
-                        </NavLink> */}
-                        {/* <NavLink
+                        </NavLink>
+                        <NavLink
                             to="/cricket"
                             active={location.pathname === "/cricket"}
                         >
@@ -96,7 +97,7 @@ const Header = () => {
                             active={location.pathname === "/kabaddi"}
                         >
                             Kabaddi
-                        </NavLink> */}
+                        </NavLink>
                         {/* <NavLink
                             to="/other-sports"
                             active={location.pathname === "/other-sports"}
@@ -106,7 +107,7 @@ const Header = () => {
                     </nav>
 
                     {/* Auth Buttons / User Info */}
-                    {/* <div className="hidden items-center space-x-4 md:flex">
+                    <div className="hidden items-center space-x-4 md:flex">
                         {user ? (
                             <div className="flex items-center space-x-4">
                                 <div className="flex items-center space-x-2">
@@ -155,7 +156,7 @@ const Header = () => {
                                 </Link>
                             </>
                         )}
-                    </div> */}
+                    </div>
 
                     {/* Mobile Menu Button */}
                     <button
@@ -175,14 +176,14 @@ const Header = () => {
             {isMenuOpen && (
                 <div className="border-t border-gray-100 bg-white px-4 py-4 shadow-lg md:hidden">
                     <nav className="flex flex-col space-y-4">
-                        {/* <MobileNavLink
+                        <MobileNavLink
                             to="/"
                             active={location.pathname === "/"}
                         >
                             Home
-                        </MobileNavLink> */}
+                        </MobileNavLink>
 
-                        {/* <MobileNavLink
+                        <MobileNavLink
                             to="/cricket"
                             active={location.pathname === "/cricket"}
                         >
@@ -199,7 +200,7 @@ const Header = () => {
                             active={location.pathname === "/kabaddi"}
                         >
                             Kabaddi
-                        </MobileNavLink> */}
+                        </MobileNavLink>
                         {/* <MobileNavLink
                             to="/other-sports"
                             active={location.pathname === "/other-sports"}

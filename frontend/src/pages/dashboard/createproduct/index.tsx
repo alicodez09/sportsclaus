@@ -23,7 +23,7 @@ export default function CreateProduct() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/product/get-product`,
+                `https://events.alltheapps.io/api/v1/product/get-product`,
             )
             const transformedData = response.data.products.map((item: any) => ({
                 ...item,

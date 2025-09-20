@@ -19,7 +19,7 @@ export default function createcategory() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/category/get-category`,
+                `https://events.alltheapps.io/api/v1/category/get-category`,
             )
             setNewsData(response.data.category)
         } catch (error) {

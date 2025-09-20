@@ -91,7 +91,7 @@ const Product = () => {
     const fetchCart = async (userId: string) => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/auth/${userId}/cart`,
+                `https://events.alltheapps.io/api/v1/auth/${userId}/cart`,
             )
             setCart(response.data.cart)
         } catch (error) {
@@ -108,7 +108,7 @@ const Product = () => {
 
         try {
             await axios.put(
-                `http://localhost:8082/api/v1/auth/${authData?.user?._id}/add-to-cart`,
+                `https://events.alltheapps.io/api/v1/auth/${authData?.user?._id}/add-to-cart`,
                 { productId },
             )
             fetchCart(authData?.user?._id)
@@ -122,7 +122,7 @@ const Product = () => {
     const removeFromCart = async (productId: string) => {
         try {
             await axios.delete(
-                `http://localhost:8082/api/v1/auth/${authData?.user?._id}/remove-from-cart/${productId}`,
+                `https://events.alltheapps.io/api/v1/auth/${authData?.user?._id}/remove-from-cart/${productId}`,
             )
             fetchCart(authData?.user?._id || "")
         } catch (error) {
@@ -133,7 +133,7 @@ const Product = () => {
     const updateQuantity = async (productId: string, newQuantity: number) => {
         try {
             await axios.put(
-                `http://localhost:8082/api/v1/auth/${authData?.user?._id}/update-cart/${productId}`,
+                `https://events.alltheapps.io/api/v1/auth/${authData?.user?._id}/update-cart/${productId}`,
                 {
                     quantity: newQuantity,
                 },
@@ -189,7 +189,7 @@ const Product = () => {
         setIsProcessingCheckout(true)
         try {
             await axios.post(
-                `http://localhost:8082/api/v1/auth/${authData?.user?._id}/checkout`,
+                `https://events.alltheapps.io/api/v1/auth/${authData?.user?._id}/checkout`,
                 {
                     shippingAddress: checkoutData.shippingAddress,
                     phoneNumber: checkoutData.phoneNumber,
@@ -219,7 +219,7 @@ const Product = () => {
         try {
             setLoading(true)
             const response = await axios.get(
-                `http://localhost:8082/api/v1/product/get-product`,
+                `https://events.alltheapps.io/api/v1/product/get-product`,
             )
             const productsData = response?.data?.products || []
             setProducts(productsData)

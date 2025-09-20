@@ -34,7 +34,7 @@ export default function CreateProduct() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/job/get`,
+                `https://events.alltheapps.io/api/v1/job/get`,
             )
 
             setNewsData(response.data.jobs)

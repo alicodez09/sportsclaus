@@ -47,7 +47,7 @@ const UserProducts = () => {
         try {
             setLoading(true)
             const response = await axios.get(
-                `http://localhost:8082/api/v1/auth/get-user`,
+                `https://events.alltheapps.io/api/v1/auth/get-user`,
             )
             const usersData = response.data.data
 
@@ -58,7 +58,7 @@ const UserProducts = () => {
                         user.products.map(async (product) => {
                             try {
                                 const productResponse = await axios.get(
-                                    `http://localhost:8082/api/v1/product/get-product-details/${product.product}`,
+                                    `https://events.alltheapps.io/api/v1/product/get-product-details/${product.product}`,
                                 )
                                 console.log(productResponse, "productResponse")
                                 return {
@@ -101,7 +101,7 @@ const UserProducts = () => {
 
             // Send all product IDs and their details in one request
             await axios.post(
-                `http://localhost:8082/api/v1/auth/approve-all-products`,
+                `https://events.alltheapps.io/api/v1/auth/approve-all-products`,
                 {
                     userId,
                     products: user.products.map((product) => ({

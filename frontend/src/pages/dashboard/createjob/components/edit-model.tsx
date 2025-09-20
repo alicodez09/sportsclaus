@@ -35,7 +35,7 @@ export default function EditModal({
         const fetchCategories = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8082/api/v1/category/get-category`,
+                    `https://events.alltheapps.io/api/v1/category/get-category`,
                 )
                 setCategories(response.data.category)
             } catch (error) {
@@ -103,7 +103,7 @@ export default function EditModal({
                 ...formData,
             }
             const response = await axios.put(
-                `http://localhost:8082/api/v1/product/update-product/${data._id}`,
+                `https://events.alltheapps.io/api/v1/product/update-product/${data._id}`,
                 updatedData,
             )
             if (response.data.success) {

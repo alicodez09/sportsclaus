@@ -71,7 +71,7 @@ const Team = () => {
         const getJobData = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8082/api/v1/auth/get-non-seller`,
+                    `https://events.alltheapps.io/api/v1/auth/get-non-seller`,
                 )
                 setnonSellerUsers(response.data.data)
                 console.log(response.data.data, "non-seller")
@@ -83,7 +83,7 @@ const Team = () => {
         const getFaqData = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8082/api/v1/faq/get-faq`,
+                    `https://events.alltheapps.io/api/v1/faq/get-faq`,
                 )
                 setFaqs(response.data.faqs)
                 console.log(response.data.faqs, "faqs")

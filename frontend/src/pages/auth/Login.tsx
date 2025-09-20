@@ -20,19 +20,20 @@ const Login: React.FC = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:8082/api/v1/auth/login`,
+                `https://events.alltheapps.io/v1/integration_web/login`,
                 {
                     email,
                     password,
                 },
             )
-
+            console.log(response.data, "datataatatatat")
+            // return
             if (response.data.success) {
                 toast.success("Login successful!")
 
                 localStorage.setItem(
                     "dropshipping_auth",
-                    JSON.stringify(response.data),
+                    JSON.stringify(response.data.data),
                 )
 
                 window.location.href = "/"

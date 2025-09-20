@@ -14,7 +14,7 @@ export default function createusers() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/auth/get-user`,
+                `https://events.alltheapps.io/v1/integration_web/GetUsers`,
             )
             setNewsData(response.data.data)
         } catch (error) {

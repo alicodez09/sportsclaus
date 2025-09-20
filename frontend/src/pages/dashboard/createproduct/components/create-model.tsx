@@ -36,7 +36,7 @@ export default function CreateModal({
         const fetchCategories = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8082/api/v1/category/get-category`,
+                    `https://events.alltheapps.io/api/v1/category/get-category`,
                 )
                 setCategories(response.data.category)
             } catch (error) {
@@ -101,7 +101,7 @@ export default function CreateModal({
 
         if (validateForm()) {
             const response = await axios.post(
-                `http://localhost:8082/api/v1/product/create-product`,
+                `https://events.alltheapps.io/api/v1/product/create-product`,
                 formData,
             )
             if (response.data.success) {

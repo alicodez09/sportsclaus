@@ -77,10 +77,10 @@ const Order = () => {
             try {
                 const [ordersResponse, productsResponse] = await Promise.all([
                     axios.get<{ data: Order[] }>(
-                        "http://localhost:8082/api/v1/auth/all-orders-admin",
+                        "https://events.alltheapps.io/api/v1/auth/all-orders-admin",
                     ),
                     axios.get<{ products: Product[] }>(
-                        "http://localhost:8082/api/v1/product/get-product",
+                        "https://events.alltheapps.io/api/v1/product/get-product",
                     ),
                 ])
 

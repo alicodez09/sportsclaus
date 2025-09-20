@@ -90,7 +90,7 @@ export default function CreateModal({
         if (validateForm()) {
             console.log(formData, "formData")
             const response = await axios.post(
-                `http://localhost:8082/api/v1/playerbanner/create`,
+                `https://events.alltheapps.io/v1/integration_web/CreatePlayerBanner`,
                 formData,
             )
             if (response.data.success) {

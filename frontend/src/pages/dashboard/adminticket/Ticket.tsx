@@ -4,7 +4,7 @@ import { X, Plus, Edit, Trash2, Calendar, Tag } from "lucide-react"
 import axios from "axios"
 import { Sidebar } from "@/components/sidebar"
 
-const API_BASE_URL = "http://localhost:8082/api/v1/tickets"
+const API_BASE_URL = "https://events.alltheapps.io/api/v1/tickets"
 
 interface Ticket {
     _id: string

@@ -22,7 +22,7 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/api/v1/banner/get`,
+                `https://events.alltheapps.io/v1/integration_web/GetBanner`,
             )
             setNewsData(response.data.data)
         } catch (error) {
