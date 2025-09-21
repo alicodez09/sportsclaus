@@ -2,11 +2,10 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
-// Define interfaces for our data types
 interface NewsItem {
     _id: string
     name: string
-    title?: string // Some items might use title instead of name
+    title?: string
     description: string
     category: string
     type?: string
@@ -29,22 +28,13 @@ const LatestCricket = () => {
             )
             const newsData = response.data.data || []
             setAllNews(newsData)
-
-            // Filter news by category "Cricket" and type "latestnews"
-            // Also handle cases where some items might use "title" instead of "name"
             const filtered = newsData.filter((item: NewsItem) => {
                 const hasCricketCategory =
                     item.category === "Cricket" ||
                     (item.category &&
                         item.category.toLowerCase().includes("cricket"))
 
-                // Check if type is "latestnews" or if type doesn't exist, include it
-                const hasLatestNewsType =
-                    !item.type ||
-                    item.type === "latestnews" ||
-                    (item.type && item.type.toLowerCase().includes("latest"))
-
-                return hasCricketCategory && hasLatestNewsType
+                return hasCricketCategory
             })
 
             setFilteredNews(filtered)
@@ -98,7 +88,6 @@ const LatestCricket = () => {
             <div className="flex min-h-screen items-center justify-center bg-white">
                 <div className="text-center">
                     <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-900"></div>
-                    <p className="text-gray-600">Loading updates...</p>
                 </div>
             </div>
         )
@@ -106,22 +95,18 @@ const LatestCricket = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <div className="container mx-auto px-4 py-6 md:py-8 lg:py-10">
-                <div className="mb-6 flex items-center justify-between">
-                    <div className="relative">
-                        <div className="flex bg-gray-900 px-4 py-1 text-sm font-medium text-white">
-                            LATEST NEWS
+            <div className="container mx-auto px-4 py-3 sm:px-6 md:py-6 lg:px-8 lg:py-6 xl:px-36">
+                <div className="mb-6 flex items-center justify-center sm:mb-8 md:mb-10">
+                    <div className="flex w-full max-w-4xl items-center justify-center">
+                        <div className="flex-grow border-t border-gray-950"></div>
+                        <div className="mx-2 flex flex-col items-center px-2 sm:mx-4 sm:px-4">
+                            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
+                                LATEST CRICKET NEWS
+                            </h1>
+                            <div className="mt-2 h-1 w-12 bg-blue-900 sm:w-16"></div>
                         </div>
-                        <div className="absolute -bottom-1 left-4 h-2 w-2 rotate-45 bg-gray-900"></div>
+                        <div className="flex-grow border-t border-gray-950"></div>
                     </div>
-                    {filteredNews.length > 4 && (
-                        <button
-                            onClick={handleViewAll}
-                            className="text-sm font-medium text-blue-900 hover:text-blue-700 md:hidden"
-                        >
-                            View All
-                        </button>
-                    )}
                 </div>
 
                 {filteredNews.length === 0 ? (
@@ -138,13 +123,13 @@ const LatestCricket = () => {
                     </div>
                 ) : (
                     <>
-                        {/* Main News Grid */}
-                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                            {/* Featured News (Left Column) */}
-                            <div className="lg:col-span-2">
+                        {/* Main News Grid - Using flex for equal height */}
+                        <div className="flex flex-col gap-6 lg:flex-row">
+                            {/* Featured News (Left Column - 2/3 width) */}
+                            <div className="lg:w-2/3">
                                 {filteredNews.length > 0 && (
                                     <div
-                                        className="group relative h-72 cursor-pointer overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-80 md:h-96"
+                                        className="group relative h-64 cursor-pointer overflow-hidden bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-80 md:h-96 lg:h-[500px]"
                                         onClick={() =>
                                             handleCardClick(filteredNews[0]._id)
                                         }
@@ -154,19 +139,19 @@ const LatestCricket = () => {
                                                 filteredNews[0].image &&
                                                 filteredNews[0].image.length > 0
                                                     ? filteredNews[0].image[0]
-                                                    : "/placeholder.svg?height=400&width=600&query=cricket"
+                                                    : "/placeholder.svg?height=500&width=800&query=cricket"
                                             }
                                             alt={getItemName(filteredNews[0])}
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             onError={(e) => {
                                                 e.currentTarget.src =
-                                                    "/placeholder.svg?height=400&width=600&query=cricket"
+                                                    "/placeholder.svg?height=500&width=800&query=cricket"
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                                         <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-6">
                                             <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                <span className="inline-block rounded bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
+                                                <span className="inline-block bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
                                                     {filteredNews[0].category}
                                                 </span>
                                                 <span className="text-xs opacity-90 sm:text-sm">
@@ -176,10 +161,10 @@ const LatestCricket = () => {
                                                     )}
                                                 </span>
                                             </div>
-                                            <h2 className="mb-3 text-xl font-bold leading-tight sm:text-2xl md:text-3xl">
+                                            <h2 className="mb-2 text-lg font-bold leading-tight sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
                                                 {getItemName(filteredNews[0])}
                                             </h2>
-                                            <p className="line-clamp-2 text-sm text-gray-200 sm:text-base">
+                                            <p className="line-clamp-2 text-xs text-gray-200 sm:text-sm md:text-base">
                                                 {renderHtml(
                                                     filteredNews[0].description,
                                                 )}
@@ -189,11 +174,11 @@ const LatestCricket = () => {
                                 )}
                             </div>
 
-                            {/* Secondary News (Right Column) */}
-                            <div className="space-y-4 sm:space-y-6">
+                            {/* Secondary News (Right Column - 1/3 width) */}
+                            <div className="flex flex-col gap-4 sm:gap-6 lg:w-1/3">
                                 {filteredNews.length > 1 && (
                                     <div
-                                        className="group relative h-48 cursor-pointer overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-52"
+                                        className="group relative h-48 cursor-pointer overflow-hidden bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-56 md:h-64 lg:h-[234px]"
                                         onClick={() =>
                                             handleCardClick(filteredNews[1]._id)
                                         }
@@ -203,19 +188,19 @@ const LatestCricket = () => {
                                                 filteredNews[1].image &&
                                                 filteredNews[1].image.length > 0
                                                     ? filteredNews[1].image[0]
-                                                    : "/placeholder.svg?height=200&width=320&query=cricket"
+                                                    : "/placeholder.svg?height=242&width=400&query=cricket"
                                             }
                                             alt={getItemName(filteredNews[1])}
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             onError={(e) => {
                                                 e.currentTarget.src =
-                                                    "/placeholder.svg?height=200&width=320&query=cricket"
+                                                    "/placeholder.svg?height=242&width=400&query=cricket"
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                                         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                                             <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                <span className="inline-block rounded bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
+                                                <span className="inline-block bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
                                                     {filteredNews[1].category}
                                                 </span>
                                                 <span className="text-xs opacity-90">
@@ -225,7 +210,7 @@ const LatestCricket = () => {
                                                     )}
                                                 </span>
                                             </div>
-                                            <h3 className="line-clamp-2 text-lg font-bold leading-tight sm:text-xl">
+                                            <h3 className="line-clamp-2 text-base font-bold leading-tight sm:text-lg md:text-xl">
                                                 {getItemName(filteredNews[1])}
                                             </h3>
                                         </div>
@@ -234,7 +219,7 @@ const LatestCricket = () => {
 
                                 {filteredNews.length > 2 && (
                                     <div
-                                        className="group relative h-48 cursor-pointer overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-52"
+                                        className="group relative h-48 cursor-pointer overflow-hidden bg-white shadow-lg transition-all duration-300 hover:shadow-xl sm:h-56 md:h-64 lg:h-[242px]"
                                         onClick={() =>
                                             handleCardClick(filteredNews[2]._id)
                                         }
@@ -244,19 +229,19 @@ const LatestCricket = () => {
                                                 filteredNews[2].image &&
                                                 filteredNews[2].image.length > 0
                                                     ? filteredNews[2].image[0]
-                                                    : "/placeholder.svg?height=200&width=320&query=cricket"
+                                                    : "/placeholder.svg?height=242&width=400&query=cricket"
                                             }
                                             alt={getItemName(filteredNews[2])}
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             onError={(e) => {
                                                 e.currentTarget.src =
-                                                    "/placeholder.svg?height=200&width=320&query=cricket"
+                                                    "/placeholder.svg?height=242&width=400&query=cricket"
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                                         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                                             <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                <span className="inline-block rounded bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
+                                                <span className="inline-block bg-blue-600 px-2 py-1 text-xs font-medium uppercase tracking-wide">
                                                     {filteredNews[2].category}
                                                 </span>
                                                 <span className="text-xs opacity-90">
@@ -266,7 +251,7 @@ const LatestCricket = () => {
                                                     )}
                                                 </span>
                                             </div>
-                                            <h3 className="line-clamp-2 text-lg font-bold leading-tight sm:text-xl">
+                                            <h3 className="line-clamp-2 text-base font-bold leading-tight sm:text-lg md:text-xl">
                                                 {getItemName(filteredNews[2])}
                                             </h3>
                                         </div>
@@ -279,7 +264,7 @@ const LatestCricket = () => {
                         {showAllNews ? (
                             <div className="mt-8 md:mt-10">
                                 <div className="mb-6 flex items-center justify-between">
-                                    <h2 className="text-2xl font-bold text-gray-900">
+                                    <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
                                         All Cricket News
                                     </h2>
                                     <button
@@ -290,11 +275,11 @@ const LatestCricket = () => {
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                     {filteredNews.slice(3).map((article) => (
                                         <div
                                             key={article._id}
-                                            className="group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg"
+                                            className="group cursor-pointer overflow-hidden border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg"
                                             onClick={() =>
                                                 handleCardClick(article._id)
                                             }
@@ -317,7 +302,7 @@ const LatestCricket = () => {
                                             </div>
                                             <div className="p-4">
                                                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                    <span className="inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
+                                                    <span className="inline-block bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
                                                         {article.category}
                                                     </span>
                                                     <span className="text-xs text-gray-500">
@@ -326,10 +311,10 @@ const LatestCricket = () => {
                                                         )}
                                                     </span>
                                                 </div>
-                                                <h4 className="line-clamp-2 text-base font-semibold leading-tight text-gray-900 group-hover:text-blue-700">
+                                                <h4 className="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 group-hover:text-blue-700 sm:text-base">
                                                     {getItemName(article)}
                                                 </h4>
-                                                <p className="mt-2 line-clamp-3 text-sm text-gray-600">
+                                                <p className="mt-2 line-clamp-3 text-xs text-gray-600 sm:text-sm">
                                                     {renderHtml(
                                                         article.description
                                                             .replace(
@@ -349,14 +334,14 @@ const LatestCricket = () => {
                             /* Additional News Items (limited view) */
                             filteredNews.length > 3 && (
                                 <div className="mt-8 md:mt-10">
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
                                         {/* Show first 4 additional news items on larger screens */}
                                         {filteredNews
                                             .slice(3, 7)
                                             .map((article) => (
                                                 <div
                                                     key={article._id}
-                                                    className="group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg"
+                                                    className="group cursor-pointer overflow-hidden border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg"
                                                     onClick={() =>
                                                         handleCardClick(
                                                             article._id,
@@ -385,7 +370,7 @@ const LatestCricket = () => {
                                                     </div>
                                                     <div className="p-4">
                                                         <div className="mb-2 flex flex-wrap items-center gap-2">
-                                                            <span className="inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
+                                                            <span className="inline-block bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
                                                                 {
                                                                     article.category
                                                                 }
@@ -396,7 +381,7 @@ const LatestCricket = () => {
                                                                 )}
                                                             </span>
                                                         </div>
-                                                        <h4 className="line-clamp-2 text-base font-semibold leading-tight text-gray-900 group-hover:text-blue-700">
+                                                        <h4 className="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 group-hover:text-blue-700 sm:text-base">
                                                             {getItemName(
                                                                 article,
                                                             )}
@@ -415,7 +400,7 @@ const LatestCricket = () => {
                                                         !showMoreNews,
                                                     )
                                                 }
-                                                className="flex items-center justify-center gap-2 rounded-full bg-gray-100 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+                                                className="flex items-center justify-center gap-2 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
                                             >
                                                 {showMoreNews
                                                     ? "Show Less"
@@ -446,7 +431,7 @@ const LatestCricket = () => {
                                                     .map((article) => (
                                                         <div
                                                             key={article._id}
-                                                            className="flex cursor-pointer gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-shadow hover:shadow-md"
+                                                            className="flex cursor-pointer gap-3 border border-gray-200 bg-white p-3 transition-shadow hover:shadow-md"
                                                             onClick={() =>
                                                                 handleCardClick(
                                                                     article._id,
@@ -468,7 +453,7 @@ const LatestCricket = () => {
                                                                     alt={getItemName(
                                                                         article,
                                                                     )}
-                                                                    className="h-14 w-14 rounded object-cover"
+                                                                    className="h-14 w-14 object-cover"
                                                                     onError={(
                                                                         e,
                                                                     ) => {
@@ -479,7 +464,7 @@ const LatestCricket = () => {
                                                             </div>
                                                             <div className="min-w-0 flex-1">
                                                                 <div className="mb-1 flex items-center gap-2">
-                                                                    <span className="inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
+                                                                    <span className="inline-block bg-blue-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-blue-800">
                                                                         {
                                                                             article.category
                                                                         }
@@ -506,7 +491,7 @@ const LatestCricket = () => {
                                         <div className="mt-8 flex justify-center">
                                             <button
                                                 onClick={handleViewAll}
-                                                className="flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                                                className="flex items-center justify-center gap-2 bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
                                             >
                                                 VIEW ALL NEWS
                                                 <svg

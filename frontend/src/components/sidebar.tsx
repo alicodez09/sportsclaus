@@ -163,7 +163,7 @@ export function Sidebar({ children }: SidebarProps) {
                                 )}
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/admin/create-lastest-news"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -175,7 +175,7 @@ export function Sidebar({ children }: SidebarProps) {
                                     </span>
                                 )}
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/admin/create-player-banner"
@@ -189,7 +189,7 @@ export function Sidebar({ children }: SidebarProps) {
                                 )}
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/admin/create-player-ranking"
                                 className="flex items-center rounded-md px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -201,7 +201,7 @@ export function Sidebar({ children }: SidebarProps) {
                                     </span>
                                 )}
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/admin/create-faq"

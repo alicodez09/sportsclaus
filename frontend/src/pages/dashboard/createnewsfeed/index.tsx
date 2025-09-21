@@ -6,8 +6,11 @@ import { Sidebar } from "@/components/sidebar"
 const newsFields: Field[] = [
     { name: "category", label: "Category", type: "select", required: true },
     { name: "type", label: "Type", type: "select", required: true },
+    { name: "status", label: "Status", type: "select", required: true },
 
     { name: "name", label: "Name", type: "text", required: true },
+    { name: "priority", label: "Priority", type: "number", required: true },
+
     {
         name: "description",
         label: "Description",

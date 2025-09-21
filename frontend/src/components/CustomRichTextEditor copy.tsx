@@ -35,68 +35,13 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
         type="button"
         // variant={isActive ? "default" : "outline"}
         // size="sm"
-        className={`h-8 w-8 rounded p-0 text-black hover:bg-gray-100 ${isActive ? "bg-gray-200" : ""}`}
+        className="h-8 w-8 p-0 text-black"
         title={title}
         onClick={() => onClick(command, value)}
     >
         {icon}
     </button>
 )
-
-const HeadingDropdown: React.FC<{
-    onSelect: (command: string, value?: string) => void
-    currentHeading?: string
-}> = ({ onSelect, currentHeading }) => {
-    const [isOpen, setIsOpen] = useState(false)
-
-    const headings = [
-        { tag: "h1", label: "Heading 1", size: "text-2xl font-bold" },
-        { tag: "h2", label: "Heading 2", size: "text-xl font-bold" },
-        { tag: "h3", label: "Heading 3", size: "text-lg font-bold" },
-        { tag: "h4", label: "Heading 4", size: "text-base font-bold" },
-        { tag: "h5", label: "Heading 5", size: "text-sm font-bold" },
-        { tag: "h6", label: "Heading 6", size: "text-xs font-bold" },
-        { tag: "p", label: "Normal Text", size: "text-base font-normal" },
-    ]
-
-    const handleSelect = (tag: string) => {
-        onSelect("formatBlock", tag)
-        setIsOpen(false)
-    }
-
-    const currentLabel =
-        headings.find((h) => h.tag === currentHeading)?.label || "Normal Text"
-
-    return (
-        <div className="relative">
-            <button
-                type="button"
-                className="h-8 rounded border px-3 text-sm text-black  hover:bg-gray-100"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                {currentLabel.split(" ")[0]} ▼
-            </button>
-            {isOpen && (
-                <div className="absolute left-0 top-full z-10 mt-1 min-w-[140px] rounded border border-gray-300 bg-white text-black shadow-lg">
-                    {headings.map((heading) => (
-                        <button
-                            key={heading.tag}
-                            type="button"
-                            className={`w-full px-3 py-2 text-left hover:bg-gray-100 ${heading.size} ${
-                                heading.tag === currentHeading
-                                    ? "bg-gray-100"
-                                    : ""
-                            }`}
-                            onClick={() => handleSelect(heading.tag)}
-                        >
-                            {heading.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    )
-}
 
 export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
     value = "",
@@ -108,14 +53,15 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
 }) => {
     const editorRef = useRef<HTMLDivElement>(null)
     const [isActive, setIsActive] = useState<Record<string, boolean>>({})
-    const [currentHeading, setCurrentHeading] = useState<string>("p")
 
+    // Initialize editor content
     useEffect(() => {
         if (editorRef.current && value !== editorRef.current.innerHTML) {
             editorRef.current.innerHTML = value
         }
     }, [value])
 
+    // Update active states
     const updateActiveStates = useCallback(() => {
         const activeStates: Record<string, boolean> = {}
 
@@ -135,43 +81,14 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
             activeStates.insertUnorderedList = document.queryCommandState(
                 "insertUnorderedList",
             )
-
-            const selection = window.getSelection()
-            if (selection && selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0)
-                let element = range.commonAncestorContainer
-
-                // Traverse up the DOM tree to find the block-level element
-                while (element && element.nodeType !== 1) {
-                    element = element.parentNode
-                }
-
-                if (element) {
-                    const tagName = (element as Element).tagName?.toLowerCase()
-                    if (
-                        ["h1", "h2", "h3", "h4", "h5", "h6", "p"].includes(
-                            tagName,
-                        )
-                    ) {
-                        setCurrentHeading(tagName)
-                    } else {
-                        // Check if we're inside a div that might be acting as a paragraph
-                        const parentElement = (element as Element).closest(
-                            'div[contenteditable="true"]',
-                        )
-                        if (parentElement === editorRef.current) {
-                            setCurrentHeading("p")
-                        }
-                    }
-                }
-            }
         } catch (error) {
-            console.error("Error updating active states:", error)
+            // Ignore errors from queryCommandState
         }
 
         setIsActive(activeStates)
     }, [])
 
+    // Handle content changes
     const handleInput = useCallback(() => {
         if (editorRef.current && onChange) {
             onChange(editorRef.current.innerHTML)
@@ -179,52 +96,15 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
         updateActiveStates()
     }, [onChange, updateActiveStates])
 
+    // Handle selection changes
     const handleSelectionChange = useCallback(() => {
         updateActiveStates()
     }, [updateActiveStates])
 
+    // Execute formatting commands
     const executeCommand = useCallback(
         (command: string, value?: string) => {
-            if (command === "formatBlock") {
-                // For formatBlock, we need to handle the heading application differently
-                if (value) {
-                    // Save current selection
-                    const selection = window.getSelection()
-                    if (selection && selection.rangeCount > 0) {
-                        const range = selection.getRangeAt(0)
-
-                        // If the selection is collapsed (just a cursor), we need to create a new block
-                        if (selection.isCollapsed) {
-                            // Create a new element of the specified type
-                            const newElement = document.createElement(value)
-
-                            // Add a zero-width space to make the element have content
-                            newElement.innerHTML = "&#8203;"
-
-                            // Insert the new element
-                            range.insertNode(newElement)
-
-                            // Move the cursor inside the new element
-                            const newRange = document.createRange()
-                            newRange.setStart(newElement, 0)
-                            newRange.setEnd(newElement, 0)
-                            selection.removeAllRanges()
-                            selection.addRange(newRange)
-                        } else {
-                            // If text is selected, apply the formatBlock command normally
-                            document.execCommand(
-                                "formatBlock",
-                                false,
-                                `<${value}>`,
-                            )
-                        }
-                    }
-                }
-            } else {
-                // For other commands, execute normally
-                document.execCommand(command, false, value)
-            }
-
+            document.execCommand(command, false, value)
             editorRef.current?.focus()
             updateActiveStates()
             handleInput()
@@ -232,6 +112,7 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
         [handleInput, updateActiveStates],
     )
 
+    // Handle paste events to clean up formatting
     const handlePaste = useCallback(
         (e: React.ClipboardEvent) => {
             e.preventDefault()
@@ -242,8 +123,10 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
         [handleInput],
     )
 
+    // Handle key events
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
+            // Handle common shortcuts
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key) {
                     case "b":
@@ -258,61 +141,13 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
                         e.preventDefault()
                         executeCommand("underline")
                         break
-                    case "1":
-                        e.preventDefault()
-                        executeCommand("formatBlock", "h1")
-                        break
-                    case "2":
-                        e.preventDefault()
-                        executeCommand("formatBlock", "h2")
-                        break
-                    case "3":
-                        e.preventDefault()
-                        executeCommand("formatBlock", "h3")
-                        break
-                }
-            }
-
-            // Handle Enter key to maintain the current heading format
-            if (e.key === "Enter") {
-                const selection = window.getSelection()
-                if (selection && selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0)
-                    let element = range.commonAncestorContainer
-
-                    // Find the block-level element
-                    while (element && element.nodeType !== 1) {
-                        element = element.parentNode
-                    }
-
-                    if (
-                        element &&
-                        ["h1", "h2", "h3", "h4", "h5", "h6"].includes(
-                            (element as Element).tagName.toLowerCase(),
-                        )
-                    ) {
-                        e.preventDefault()
-
-                        // Create a new paragraph after the heading
-                        const newParagraph = document.createElement("p")
-                        newParagraph.innerHTML = "&#8203;"(
-                            // Insert after the current heading
-                            element as Element,
-                        ).after(newParagraph)
-
-                        // Move selection to the new paragraph
-                        const newRange = document.createRange()
-                        newRange.setStart(newParagraph, 0)
-                        newRange.setEnd(newParagraph, 0)
-                        selection.removeAllRanges()
-                        selection.addRange(newRange)
-                    }
                 }
             }
         },
         [executeCommand],
     )
 
+    // Add event listeners
     useEffect(() => {
         document.addEventListener("selectionchange", handleSelectionChange)
         return () => {
@@ -324,15 +159,10 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
     }, [handleSelectionChange])
 
     return (
-        <div className="overflow-hidden rounded-lg border border-gray-300">
+        <div>
+            {/* Toolbar */}
             <div className="border-border bg-muted/50 flex flex-wrap gap-1 border-b p-2">
-                <HeadingDropdown
-                    onSelect={executeCommand}
-                    currentHeading={currentHeading}
-                />
-
-                <div className="bg-border mx-1 h-6 w-px" />
-
+                {/* Text Formatting */}
                 <div className="flex gap-1">
                     <ToolbarButton
                         command="bold"
@@ -366,6 +196,7 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
 
                 <div className="bg-border mx-1 h-6 w-px" />
 
+                {/* Text Alignment */}
                 <div className="flex gap-1">
                     <ToolbarButton
                         command="justifyLeft"
@@ -429,21 +260,20 @@ export const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
                 <div className="bg-border mx-1 h-6 w-px" />
             </div>
 
-            <div className="max-h-96 overflow-y-auto">
-                <div
-                    ref={editorRef}
-                    contentEditable
-                    suppressContentEditableWarning
-                    className="focus:ring-ring text-foreground min-h-[120px] p-3 text-black focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    style={{ wordWrap: "break-word" }}
-                    onInput={handleInput}
-                    onPaste={handlePaste}
-                    onKeyDown={handleKeyDown}
-                    data-placeholder={placeholder}
-                    id={id}
-                    data-name={name}
-                />
-            </div>
+            {/* Editor */}
+            <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                className="focus:ring-ring text-foreground min-h-[120px] p-3 text-black focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ wordWrap: "break-word" }}
+                onInput={handleInput}
+                onPaste={handlePaste}
+                onKeyDown={handleKeyDown}
+                data-placeholder={placeholder}
+                id={id}
+                data-name={name}
+            />
         </div>
     )
 }

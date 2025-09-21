@@ -163,12 +163,12 @@ export default function DataTable({
 
                                     <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                                         <div className="flex justify-end space-x-2">
-                                            {/* <button
+                                            <button
                                                 onClick={() => handleEdit(item)}
                                                 className="rounded p-1 text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                             >
                                                 <HiPencil />
-                                            </button> */}
+                                            </button>
                                             {onDelete && (
                                                 <button
                                                     onClick={() =>

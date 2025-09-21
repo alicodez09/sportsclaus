@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import type { Field, DataItem } from "./data-table"
 import axios from "axios"
 import { CloudinaryUpload } from "@/components/CloudinaryUpload"
+import { CustomRichTextEditor } from "@/components/CustomRichTextEditor" // Import the rich text editor
 
 interface EditModalProps {
     isOpen: boolean
@@ -23,6 +24,20 @@ export default function EditModal({
 }: EditModalProps) {
     const [formData, setFormData] = useState<any>({})
     const [errors, setErrors] = useState<Record<string, string>>({})
+    const [categories, setCategories] = useState<any[]>([
+        { id: 1, name: "Cricket", slug: "Cricket" },
+        { id: 2, name: "Football", slug: "Football" },
+        { id: 3, name: "Kabaddi", slug: "Kabaddi" },
+    ])
+    const [type, setType] = useState<any[]>([
+        { id: 1, name: "latestnews", slug: "latestnews" },
+        { id: 2, name: "match_analysis", slug: "match_analysis" },
+        { id: 3, name: "opinion", slug: "opinion" },
+    ])
+    const [status, setStatus] = useState<any[]>([
+        { id: 1, name: "publish", slug: "publish" },
+        { id: 2, name: "draft", slug: "draft" },
+    ])
 
     useEffect(() => {
         const initialData: Record<string, any> = {}
@@ -71,6 +86,17 @@ export default function EditModal({
                 newErrors[field.name] = `${field.label} is required`
             }
 
+            // Add validation for rich text content
+            if (
+                field.required &&
+                field.type === "textarea" &&
+                (!formData[field.name] ||
+                    formData[field.name].trim() === "" ||
+                    formData[field.name] === "<p><br></p>") // Check for empty rich text content
+            ) {
+                newErrors[field.name] = `${field.label} is required`
+            }
+
             if (field.type === "email" && formData[field.name]) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
                 if (!emailRegex.test(formData[field.name])) {
@@ -93,12 +119,13 @@ export default function EditModal({
         e.preventDefault()
 
         if (validateForm()) {
-            const updatedData = {
+            const payload = {
                 ...formData,
             }
+
             const response = await axios.put(
-                `https://events.alltheapps.io/api/v1/newsfeed/update/${data._id}`,
-                updatedData,
+                `https://events.alltheapps.io/v1/integration_web/UpdateNews/${data._id}`,
+                payload,
             )
             if (response.data.success) {
                 onClose()
@@ -111,8 +138,8 @@ export default function EditModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-                <div className="mb-4 flex items-center justify-between">
+            <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-lg bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-gray-200 p-6">
                     <h3 className="text-lg font-medium text-gray-900">
                         Edit Record
                     </h3>
@@ -124,162 +151,237 @@ export default function EditModal({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="space-y-4">
-                        {fields.map((field) => (
-                            <div key={field.name} className="space-y-1">
-                                <label
-                                    htmlFor={field.name}
-                                    style={{ color: "black" }}
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    {field.label}{" "}
-                                    {field.required && (
-                                        <span className="text-red-500">*</span>
-                                    )}
-                                </label>
-
-                                {field.type === "select" && field.options ? (
-                                    <select
-                                        id={field.name}
-                                        name={field.name}
+                {/* Scrollable content area */}
+                <div className="flex-grow overflow-y-auto px-6 py-4">
+                    <form onSubmit={handleSubmit}>
+                        <div className="space-y-4">
+                            {fields.map((field) => (
+                                <div key={field.name} className="space-y-1">
+                                    <label
+                                        htmlFor={field.name}
                                         style={{ color: "black" }}
-                                        value={formData[field.name] || ""}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                field.name,
-                                                e.target.value,
-                                            )
-                                        }
-                                        className={`mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
-                                            errors[field.name]
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        }`}
+                                        className="block text-sm font-medium text-gray-700"
                                     >
-                                        <option value="">
-                                            Select {field.label}
-                                        </option>
-                                        {field.options.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : field.type === "date" ? (
-                                    <input
-                                        type="date"
-                                        id={field.name}
-                                        name={field.name}
-                                        style={{ color: "black" }}
-                                        value={
-                                            formData[field.name]
-                                                ? new Date(formData[field.name])
-                                                      .toISOString()
-                                                      .split("T")[0]
-                                                : ""
-                                        }
-                                        onChange={(e) =>
-                                            handleChange(
-                                                field.name,
-                                                e.target.value,
-                                            )
-                                        }
-                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
-                                            errors[field.name]
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        }`}
-                                    />
-                                ) : field.type === "textarea" ? (
-                                    <textarea
-                                        id={field.name}
-                                        name={field.name}
-                                        value={formData[field.name] || ""}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                field.name,
-                                                e.target.value,
-                                            )
-                                        }
-                                        rows={4}
-                                        style={{ color: "black" }}
-                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
-                                            errors[field.name]
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        }`}
-                                    />
-                                ) : field.type === "image" ? (
-                                    <>
-                                        <CloudinaryUpload
-                                            onUploadSuccess={(urls) =>
-                                                handleChange(field.name, urls)
-                                            }
-                                            multiple={true}
-                                            existingImages={
-                                                formData[field.name] || []
-                                            }
-                                            onImageRemove={(url) =>
-                                                handleImageRemove(
+                                        {field.label}{" "}
+                                        {field.required && (
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        )}
+                                    </label>
+
+                                    {field.name === "category" ? (
+                                        <select
+                                            id={field.name}
+                                            name={field.name}
+                                            style={{ color: "black" }}
+                                            value={formData[field.name] || ""}
+                                            onChange={(e) =>
+                                                handleChange(
                                                     field.name,
-                                                    url,
+                                                    e.target.value,
                                                 )
                                             }
+                                            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                                errors[field.name]
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            }`}
+                                        >
+                                            <option value="">
+                                                Select {field.label}
+                                            </option>
+                                            {categories.map((category) => (
+                                                <option
+                                                    key={category._id}
+                                                    value={category._id}
+                                                >
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : field.name === "status" ? (
+                                        <select
+                                            id={field.name}
+                                            name={field.name}
+                                            style={{ color: "black" }}
+                                            value={formData[field.name] || ""}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    field.name,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                                errors[field.name]
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            }`}
+                                        >
+                                            <option value="">
+                                                Select {field.label}
+                                            </option>
+                                            {status.map((category) => (
+                                                <option
+                                                    key={category._id}
+                                                    value={category._id}
+                                                >
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : field.name === "type" ? (
+                                        <select
+                                            id={field.name}
+                                            name={field.name}
+                                            style={{ color: "black" }}
+                                            value={formData[field.name] || ""}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    field.name,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                                errors[field.name]
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            }`}
+                                        >
+                                            <option value="">
+                                                Select {field.label}
+                                            </option>
+                                            {type.map((category) => (
+                                                <option
+                                                    key={category._id}
+                                                    value={category._id}
+                                                >
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : field.type === "date" ? (
+                                        <input
+                                            type="date"
+                                            id={field.name}
+                                            name={field.name}
+                                            style={{ color: "black" }}
+                                            value={
+                                                formData[field.name]
+                                                    ? new Date(
+                                                          formData[field.name],
+                                                      )
+                                                          .toISOString()
+                                                          .split("T")[0]
+                                                    : ""
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    field.name,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                                errors[field.name]
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            }`}
                                         />
-                                    </>
-                                ) : (
-                                    <input
-                                        type={
-                                            field.type === "number"
-                                                ? "number"
-                                                : field.type === "email"
-                                                  ? "email"
-                                                  : "text"
-                                        }
-                                        id={field.name}
-                                        name={field.name}
-                                        value={formData[field.name] || ""}
-                                        style={{ color: "black" }}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                field.name,
-                                                e.target.value,
-                                            )
-                                        }
-                                        className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
-                                            errors[field.name]
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        }`}
-                                    />
-                                )}
+                                    ) : field.type === "textarea" ? (
+                                        // Use CustomRichTextEditor for textarea fields
+                                        <div
+                                            className={`mt-1 ${errors[field.name] ? "rounded-md border border-red-500" : ""}`}
+                                        >
+                                            <CustomRichTextEditor
+                                                value={
+                                                    formData[field.name] || ""
+                                                }
+                                                onChange={(value) =>
+                                                    handleChange(
+                                                        field.name,
+                                                        value,
+                                                    )
+                                                }
+                                                placeholder={`Enter ${field.label}...`}
+                                                name={field.name}
+                                                id={field.name}
+                                            />
+                                        </div>
+                                    ) : field.type === "image" ? (
+                                        <>
+                                            {/* <CloudinaryUpload
+                                                onUploadSuccess={(urls) =>
+                                                    handleChange(
+                                                        field.name,
+                                                        urls,
+                                                    )
+                                                }
+                                                multiple={false}
+                                                existingImages={
+                                                    formData[field.name] || []
+                                                }
+                                                onImageRemove={(url) =>
+                                                    handleImageRemove(
+                                                        field.name,
+                                                        url,
+                                                    )
+                                                }
+                                            /> */}
+                                        </>
+                                    ) : (
+                                        <input
+                                            type={
+                                                field.type === "number"
+                                                    ? "number"
+                                                    : field.type === "email"
+                                                      ? "email"
+                                                      : "text"
+                                            }
+                                            id={field.name}
+                                            name={field.name}
+                                            value={formData[field.name] || ""}
+                                            style={{ color: "black" }}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    field.name,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm ${
+                                                errors[field.name]
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            }`}
+                                        />
+                                    )}
 
-                                {errors[field.name] && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors[field.name]}
-                                    </p>
-                                )}
-                            </div>
-                        ))}
-                    </div>
+                                    {errors[field.name] && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors[field.name]}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
 
-                    <div className="mt-6 flex justify-end space-x-3">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        >
-                            Save Changes
-                        </button>
-                    </div>
-                </form>
+                        {/* Fixed button container at the bottom */}
+                        <div className="sticky -bottom-3 z-50 mt-6 flex justify-end space-x-3 border-t border-gray-200 bg-white  pt-4">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     )
