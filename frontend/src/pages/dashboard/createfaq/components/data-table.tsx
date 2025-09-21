@@ -65,7 +65,7 @@ export default function DataTable({
 
     const handleDelete = async (id: string) => {
         const response = await axios.delete(
-            `https://events.alltheapps.io/api/v1/faq/delete-faq/${id}`,
+            `http://localhost:8082/api/v1/faq/delete-faq/${id}`,
         )
         if (response.data.success && onRefresh) {
             onRefresh()

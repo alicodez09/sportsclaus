@@ -13,7 +13,7 @@ const PlayerBanner = () => {
     const getPlayersBanner = async () => {
         try {
             const response = await axios.get(
-                `https://events.alltheapps.io/v1/integration_web/GetPlayerBanner`,
+                `http://localhost:8082/v1/integration_web/GetPlayerBanner`,
             )
             const banners = response.data.data || []
 

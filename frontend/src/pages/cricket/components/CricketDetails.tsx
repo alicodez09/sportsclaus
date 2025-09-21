@@ -23,7 +23,7 @@ const CricketDetails = () => {
         try {
             setLoading(true)
             const response = await axios.get(
-                `https://events.alltheapps.io/v1/integration_web/GetSingleNews/${id}`,
+                `http://localhost:8082/v1/integration_web/GetSingleNews/${id}`,
             )
             setNewsItem(response.data.data)
         } catch (err) {

@@ -15,7 +15,7 @@ const Faq = () => {
         const getFaqData = async () => {
             try {
                 const response = await axios.get(
-                    `https://events.alltheapps.io/api/v1/faq/get-faq`,
+                    `http://localhost:8082/api/v1/faq/get-faq`,
                 )
                 setFaqs(response.data.faqs)
                 console.log(response.data.faqs, "faqs")

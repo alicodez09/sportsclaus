@@ -20,7 +20,7 @@ const Login: React.FC = () => {
 
         try {
             const response = await axios.post(
-                `https://events.alltheapps.io/v1/integration_web/login`,
+                `http://localhost:8082/v1/integration_web/login`,
                 {
                     email,
                     password,

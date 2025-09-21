@@ -124,7 +124,7 @@ export default function EditModal({
             }
 
             const response = await axios.put(
-                `https://events.alltheapps.io/v1/integration_web/UpdateNews/${data._id}`,
+                `http://localhost:8082/v1/integration_web/UpdateNews/${data._id}`,
                 payload,
             )
             if (response.data.success) {

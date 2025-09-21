@@ -65,7 +65,7 @@ export default function DataTable({
 
     const handleDelete = async (id: string) => {
         const response = await axios.delete(
-            `https://events.alltheapps.io/v1/integration_web/DeletePlayerBanner/${id}`,
+            `http://localhost:8082/v1/integration_web/DeletePlayerBanner/${id}`,
         )
         if (response.data.success && onRefresh) {
             onRefresh()

@@ -95,7 +95,7 @@ export default function EditModal({
                 ...formData,
             }
             const response = await axios.put(
-                `https://events.alltheapps.io/api/v1/category/update-category/${data._id}`,
+                `http://localhost:8082/api/v1/category/update-category/${data._id}`,
                 updatedData,
             )
             if (response.data.success) {

@@ -86,7 +86,7 @@ export default function CreateModal({
 
         if (validateForm()) {
             const response = await axios.post(
-                `https://events.alltheapps.io/api/v1/job/create`,
+                `http://localhost:8082/api/v1/job/create`,
                 formData,
             )
             if (response.data.success) {

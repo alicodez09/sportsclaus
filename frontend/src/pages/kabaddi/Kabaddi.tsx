@@ -26,7 +26,7 @@ const Kabaddi = () => {
     const getNews = async () => {
         try {
             const response = await axios.get(
-                `https://events.alltheapps.io/v1/integration_web/GetNews`,
+                `http://localhost:8082/v1/integration_web/GetNews`,
             )
             const newsData = response.data.data || []
             setAllNews(newsData)

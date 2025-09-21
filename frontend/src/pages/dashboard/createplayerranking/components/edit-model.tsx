@@ -129,7 +129,7 @@ export default function EditModal({
                 apiData._id = data._id
                 console.log(apiData, "apiData")
                 const response = await axios.put(
-                    `https://events.alltheapps.io/api/v1/playerranking/update/${data._id}`,
+                    `http://localhost:8082/api/v1/playerranking/update/${data._id}`,
                     apiData,
                 )
 

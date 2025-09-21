@@ -26,7 +26,7 @@ export default function createnewsfeed() {
     const getData = async () => {
         try {
             const response = await axios.get(
-                `https://events.alltheapps.io/v1/integration_web/GetNews`,
+                `http://localhost:8082/v1/integration_web/GetNews`,
             )
             console.log(response.data, "response.data")
             setNewsData(response.data.data)

@@ -47,7 +47,7 @@ const Register: React.FC = () => {
 
         try {
             const response = await axios.post(
-                `https://events.alltheapps.io/v1/integration_web/register`,
+                `http://localhost:8082/v1/integration_web/register`,
 
                 {
                     name,

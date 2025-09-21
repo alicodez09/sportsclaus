@@ -36,7 +36,7 @@ const Home = () => {
         const getData = async () => {
             try {
                 const response = await axios.get(
-                    `https://events.alltheapps.io/v1/integration_web/GetBanner`,
+                    `http://localhost:8082/v1/integration_web/GetBanner`,
                 )
                 if (response.data.data && response.data.data.length > 0) {
                     setSliderData(response.data.data)
